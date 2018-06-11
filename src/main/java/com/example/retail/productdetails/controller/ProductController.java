@@ -2,7 +2,6 @@ package com.example.retail.productdetails.controller;
 
 
 import com.example.retail.productdetails.DocumetVO.DocumentVo;
-import com.example.retail.productdetails.document.Product;
 import com.example.retail.productdetails.repository.ProductRepository;
 import com.example.retail.productdetails.service.RetailLogics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/rest/product")
+@RequestMapping("/product")
 public class ProductController {
 
 
@@ -21,9 +20,12 @@ public class ProductController {
     @Autowired
     DocumentVo  documentVo;
 
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void create(@RequestBody Product product){
-        productRepository.save(product);
+
+
+    @RequestMapping(value="/save" ,method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void create(@RequestBody DocumentVo documentVo){
+
+        retailLogics.save(documentVo);
     }
 
     @RequestMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,8 +34,9 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@RequestBody() Product product, @PathVariable Long id){
-        productRepository.save(product);
+    public void update(@RequestBody() DocumentVo documentVo, @PathVariable Long id){
+
+        retailLogics.save(documentVo);
     }
 
 }

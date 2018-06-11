@@ -1,5 +1,6 @@
 package com.example.retail.productdetails.DocumetVO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -7,11 +8,18 @@ import org.springframework.stereotype.Component;
 public class DocumentVo  {
 
 
-
     Long productId;
     String productName;
-    Float productPrice;
 
+
+    @Autowired
+    Price price;
+
+
+    public DocumentVo() {
+
+        this.price =  new Price();
+    }
 
     public Long getProductId() {
         return productId;
@@ -21,7 +29,6 @@ public class DocumentVo  {
         this.productId = productId;
     }
 
-
     public String getProductName() {
         return productName;
     }
@@ -30,15 +37,12 @@ public class DocumentVo  {
         this.productName = productName;
     }
 
-    public Float getProductPrice() {
-        return productPrice;
+
+    public Price getPrice() {
+        return price;
     }
 
-    public void setProductPrice(Float productPrice) {
-        this.productPrice = productPrice;
+    public void setPrice(Price price) {
+        this.price = price;
     }
-
-
-
-
 }

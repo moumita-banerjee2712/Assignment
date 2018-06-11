@@ -2,6 +2,7 @@ package com.example.retail.productdetails.service;
 
 
 import com.example.retail.productdetails.DocumetVO.DocumentVo;
+import com.example.retail.productdetails.DocumetVO.Price;
 import com.example.retail.productdetails.document.Product;
 import com.example.retail.productdetails.repository.ProductRepository;
 import com.oracle.javafx.jmx.json.JSONException;
@@ -10,6 +11,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.ws.rs.NotFoundException;
@@ -18,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Component
+@Service
 public class RetailLogics {
 
     @Value("${URI}")
@@ -26,33 +29,31 @@ public class RetailLogics {
     ProductRepository productRepository;
     @Autowired
     DocumentVo  documentVo;
+    @Autowired
+    Price price;
 
     public DocumentVo getDetail(Long id) throws ParseException{
 
         Product p= productRepository.findById(id).orElseThrow(() -> new NotFoundException());
-        System.out.println(p);
         String Name = covertJSON(id);
         documentVo.setProductId(p.getId());
-        System.out.println("Name "+Name);
         documentVo.setProductName(Name);
-        documentVo.setProductPrice(p.getPrice());
+        price.setCurrency_cd(p.getCurrency_cd());
+        price.setValue(p.getPrice());
+        documentVo.setPrice(price);
 
         return documentVo;
     }
 
     public  String covertJSON(Long id) throws org.json.simple.parser.ParseException {
 
-        System.out.println("Uri from app......");
+
         RestTemplate restTemplate = new RestTemplate();
         String URI=  Uri+ id.toString();
-        System.out.println("Uri from app "+Uri);
-        System.out.println("Id val "+id.toString());
-        System.out.println("value "+URI);
         String output = restTemplate.getForObject(URI, String.class);
         org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
         JSONObject jsonObject= (JSONObject) jsonParser.parse(output);
         String val = recurseKeys(jsonObject,"title");
-        //System.out.println("value "+val);
         return val;
     }
 
@@ -81,7 +82,17 @@ public class RetailLogics {
 
             }
         }
-        // key is not found
         return finalValue;
+    }
+
+    public void save(DocumentVo documentVo){
+
+
+        Product product = new Product();
+        product.setId(documentVo.getProductId());
+        product.setPrice(documentVo.getPrice().getValue());
+        product.setCurrency_cd(documentVo.getPrice().getCurrency_cd());
+
+        productRepository.save(product);
     }
 }

@@ -16,6 +16,8 @@ public class Product {
     Long id;
     @Field
     Float price;
+    @Field
+    String currency_cd;
 
     public Long getId() {
         return id;
@@ -33,5 +35,11 @@ public class Product {
         this.price = price;
     }
 
+    public String getCurrency_cd() {
+        return currency_cd;
+    }
 
+    public void setCurrency_cd(String currency_cd) {
+        this.currency_cd = currency_cd;
+    }
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class RetailLogics {
 
     public DocumentVo getDetail(Long id) throws ParseException{
 
-        Product p= productRepository.findById(id).orElseThrow(() -> new NotFoundException());
+        Product p= productRepository.findById(id).orElseThrow(() -> new RuntimeException("No data found!"));
         String Name = covertJSON(id);
         documentVo.setProductId(p.getId());
         documentVo.setProductName(Name);
@@ -45,7 +44,7 @@ public class RetailLogics {
         return documentVo;
     }
 
-    public  String covertJSON(Long id) throws org.json.simple.parser.ParseException {
+    public  String covertJSON(Long id) throws org.json.simple.parser.ParseException, NullPointerException {
 
 
         RestTemplate restTemplate = new RestTemplate();
